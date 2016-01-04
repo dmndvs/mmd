@@ -1,3 +1,4 @@
 name = mmd
-description = My.Module.Dmn
+description = My.Module.D
+version = 1.0
 core = 7.x
