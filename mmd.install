@@ -1,0 +1,46 @@
+<?php
+/**
+ * implements hook_schema
+ */
+function mmd_schema() {
+  $schema['mmd'] = array(
+    'description' => t('table storing for mmd module.'),
+    'fields' => array(
+      'mid' => array(
+        'description' => 'id',
+        'type' => 'serial',
+      ),
+      'mname' => array(
+        'description' => 'Machine name for content',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'title' => array(
+        'description' => 'title for content',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'data' => array(
+        'description' => 'content',
+        'type' => 'text',
+      ),
+      'setting' => array(
+        'description' => 'some additional data/setting for content',
+        'type' => 'text',
+      ),
+      'created' => array(
+        'description' => 'date when content was created',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('mid'),
+    'unique keys' => array(
+      'mname' => array('mname'),
+    ),
+  );
+  return $schema;
+}
