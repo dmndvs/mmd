@@ -10,12 +10,6 @@ function mmd_schema() {
         'description' => 'id',
         'type' => 'serial',
       ),
-      'mname' => array(
-        'description' => 'Machine name for content',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-      ),
       'title' => array(
         'description' => 'title for content',
         'type' => 'varchar',
@@ -28,7 +22,8 @@ function mmd_schema() {
       ),
       'setting' => array(
         'description' => 'some additional data/setting for content',
-        'type' => 'text',
+        'type' => 'blob',
+        'serialize' => TRUE,
       ),
       'created' => array(
         'description' => 'date when content was created',
@@ -38,9 +33,15 @@ function mmd_schema() {
       ),
     ),
     'primary key' => array('mid'),
-    'unique keys' => array(
-      'mname' => array('mname'),
-    ),
   );
   return $schema;
+}
+
+function mmd_install() {
+  drupal_mkdir('public://mmd-img/');
+  drupal_mkdir('public://mmd-img/thumbnail/');
+}
+
+function mmd_uninstall() {
+  file_unmanaged_delete_recursive('public://mmd-img/');
 }

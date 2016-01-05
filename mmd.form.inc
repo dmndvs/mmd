@@ -12,10 +12,20 @@ function mmd_form($form, &$form_state) {
 
   $form['mmd_form']['title'] = array(
     '#type' => 'textfield',
-    '#title' => t('title'),
+    '#title' => t('Title'),
     '#size' => 80,
     '#maxlength' => 255,
-    '#required' => FALSE,
+    '#required' => TRUE,
+  );
+
+  $form['mmd_form']['checkbox'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("It's importants"),
+  );
+
+  $form['mmd_form']['file'] = array(
+    '#type' => 'file',
+    '#description' => t('Choose image with next extension: jpg, jpeg, png or gif') . '<br>' . t('max size: 2mb'),
   );
 
   $form['mmd_form']['data'] = array(
@@ -25,11 +35,8 @@ function mmd_form($form, &$form_state) {
     '#title' => t('First Name'),
     '#required' => FALSE,
   );
-  $form['mmd_form']['file'] = array(
-    '#type' => 'file',
-    '#title' => 'Image',
-    '#description' => t('Choose image with next extension: jpg, jpeg, png or gif'),
-  );
+
+
   $form['mmd_form']['submit'] = array(
     '#type' => 'submit',
     '#value' => 'submit',
@@ -37,3 +44,114 @@ function mmd_form($form, &$form_state) {
 
   return $form;
 }
+
+/**
+ * form validation
+ */
+function mmd_form_validate($form, &$form_state) {
+
+  $form_state['values']['title'] = mmd_clear_data($form_state['values']['title']);
+  $form_state['values']['data'] = mmd_clear_data($form_state['values']['data']);
+
+  /**
+   * Check file, upload, rename and create thumbnail
+   */
+  if(isset($form_state['values']['file'])) {
+    $validators = array(
+      'file_validate_is_image' => array(),
+      'file_validate_extensions' => array('png gif jpg jpeg'),
+      'file_validate_size' => array(2 * 1024 * 1024),
+    );
+
+    if ($file = file_save_upload('file', $validators, 'public://mmd-img/')) {
+      $file->status = FILE_STATUS_PERMANENT;
+      file_save($file);
+
+      $extension = pathinfo($file->filename, PATHINFO_EXTENSION);
+
+      $filename = time() . '_' . rand(1,99999) . '.' . $extension;
+      file_move($file, 'public://mmd-img/'. $filename);
+      $file->filename = $filename;
+
+      if(mmd_create_img_thumbnail($file->filename)) {
+        $form_state['values']['file'] = $file;
+      }
+      else {
+        unset($form_state['values']['file']);
+        drupal_unlink('public://mmd-img/' . $file->filename);
+      }
+    }
+  }
+}
+
+/**
+ * submit handler
+ */
+function mmd_form_submit($form, &$form_state) {
+  if(mmd_insert_into_db($form_state)) {
+    drupal_set_message(t('added'));
+  }
+  else {
+    drupal_set_message(t('Something went wrong'), 'error');
+  }
+
+}
+
+/**
+ * Handler, that insert validated data into database
+ */
+function mmd_insert_into_db(&$form_state) {
+
+  /**
+   * creating settings array:
+   */
+  $setting = array();
+  $setting['importance'] = $form_state['values']['checkbox'];
+
+  if(isset($form_state['values']['file']->filename)) {
+    $setting['filename'] = $form_state['values']['file']->filename;
+  }
+  $data = array(
+    'title' => $form_state['values']['title'],
+    'data' => $form_state['values']['data'],
+    'created' => time(),
+    'setting' => $setting,
+  );
+  if (drupal_write_record('mmd', $data)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Handler, that clear not allowed tags
+ */
+function mmd_clear_data($data) {
+  $search = array('<?php', '<?', '?>');
+  $data = drupal_html_to_text($data);
+  $data = str_replace($search, '', $data);
+  return $data;
+}
+
+/**
+ * Handler, that created thumbnail of src image.
+ * @param $src - filename of uploaded img
+ * @return TRUE or FALSE.
+ */
+function mmd_create_img_thumbnail($src) {
+      $img = image_load('public://mmd-img/' . $src);
+      if ($img->info['height'] >= 150) {
+        image_resize($img, ($img->info['width'] * 150 / $img->info['height']), 150);
+      }
+      if(image_save($img, 'public://mmd-img/thumbnail/' . $src)) {
+        return TRUE;
+      }
+      else {
+        return FALSE;
+      }
+}
+
+
+
