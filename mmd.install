@@ -1,6 +1,6 @@
 <?php
 /**
- * implements hook_schema
+ * Implements hook_schema
  */
 function mmd_schema() {
   $schema['mmd'] = array(
@@ -37,11 +37,30 @@ function mmd_schema() {
   return $schema;
 }
 
+/**
+ * Implements hook_install
+ *
+ * Create image folder in the public path
+ * and
+ * Copy default images to this folders
+ */
 function mmd_install() {
   drupal_mkdir('public://mmd-img/');
   drupal_mkdir('public://mmd-img/thumbnail/');
+  $images = array('noimage.png', 'imp.png');
+  foreach($images as $src) {
+    $img = image_load(drupal_get_path('module','mmd') . '/img/' . $src);
+    image_save($img, 'public://mmd-img/thumbnail/' . $src);
+    image_save($img, 'public://mmd-img/' . $src);
+  }
 }
 
+/**
+ * Implements hook_uninstall
+ *
+ * Delete created folders by module
+ * and erase all data in this folder
+ */
 function mmd_uninstall() {
   file_unmanaged_delete_recursive('public://mmd-img/');
 }

@@ -4,10 +4,39 @@
  */
 function mmd_permission() {
   return array(
-    'mmd' => array(
-      'title' => t('MMD Setting'),
+    'mmd_access' => array(
+      'title' => t('MMD access'),
       'description' => t('Perform access'),
     ),
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function mmd_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'ctools' && !empty($plugin_type)) {
+    return 'plugins/' . $plugin_type;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mmd_theme()
+{
+  return array(
+    'mmd_display_item' => array(
+      'template' => 'mmd_display_item',
+      'arguments' => array(
+        'title' => null,
+        'data' => null,
+        'created' => null,
+        'img' => null,
+        'importance' => null,
+        'row' => null,
+      )
+    )
   );
 }
 
@@ -21,39 +50,10 @@ function mmd_menu() {
     'description' => t('My.Module.D'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mmd_form'),
-    'access callback' => TRUE,
+    'access arguments' => array('mmd_access'),
     'type' => MENU_NORMAL_ITEM,
     'menu_name' => 'main-menu',
     'file' => 'mmd.form.inc',
   );
-
-  $items['mmd/add'] = array(
-    'title' => t('MMD INPUT'),
-    'description' => t('Add new item'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('mmd_form'),
-    'access callback' => TRUE,
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'file' => 'mmd.form.inc',
-  );
-
-  $items['mmd/display'] = array(
-    'title' => t('MMD view'),
-    'description' => 'DMN custom module view',
-    'page callback' => 'mmd_display',
-    'access callback' => TRUE,
-    'type' => MENU_LOCAL_TASK,
-    'file' => 'mmd.display.inc',
-  );
-
-  $items['admin/config/content/mmd'] = array(
-    'title' => 'MMD Configuration',
-    'description' => 'MMD module configuration',
-    'page callback' => 'mmd_admin_view_page',
-    'access arguments' => array('mmd'),
-    'type' => MENU_NORMAL_ITEM,
-    'file' => 'mmd.admin.inc',
-  );
-
  return $items;
 }

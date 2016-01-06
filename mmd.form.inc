@@ -39,7 +39,7 @@ function mmd_form($form, &$form_state) {
 
   $form['mmd_form']['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'submit',
+    '#value' => t('submit'),
   );
 
   return $form;
@@ -47,11 +47,12 @@ function mmd_form($form, &$form_state) {
 
 /**
  * form validation
+ * @see mmd_form()
  */
 function mmd_form_validate($form, &$form_state) {
 
-  $form_state['values']['title'] = mmd_clear_data($form_state['values']['title']);
-  $form_state['values']['data'] = mmd_clear_data($form_state['values']['data']);
+  $form_state['values']['title'] = _mmd_clear_data($form_state['values']['title']);
+  $form_state['values']['data'] = _mmd_clear_data($form_state['values']['data']);
 
   /**
    * Check file, upload, rename and create thumbnail
@@ -73,7 +74,7 @@ function mmd_form_validate($form, &$form_state) {
       file_move($file, 'public://mmd-img/'. $filename);
       $file->filename = $filename;
 
-      if(mmd_create_img_thumbnail($file->filename)) {
+      if(_mmd_create_img_thumbnail($file->filename)) {
         $form_state['values']['file'] = $file;
       }
       else {
@@ -86,9 +87,12 @@ function mmd_form_validate($form, &$form_state) {
 
 /**
  * submit handler
+ *
+ * @see mmd_form()
+ * @see mmd_form_validate()
  */
 function mmd_form_submit($form, &$form_state) {
-  if(mmd_insert_into_db($form_state)) {
+  if(_mmd_insert_into_db($form_state)) {
     drupal_set_message(t('added'));
   }
   else {
@@ -99,8 +103,12 @@ function mmd_form_submit($form, &$form_state) {
 
 /**
  * Handler, that insert validated data into database
+ *
+ * @see mmd_form()
+ * @see mmd_form_validate()
+ * @see mmd_form_submit()
  */
-function mmd_insert_into_db(&$form_state) {
+function _mmd_insert_into_db(&$form_state) {
 
   /**
    * creating settings array:
@@ -127,23 +135,24 @@ function mmd_insert_into_db(&$form_state) {
 
 /**
  * Handler, that clear not allowed tags
+ *
+ * @see mmd_form_validate()
  */
-function mmd_clear_data($data) {
-  $search = array('<?php', '<?', '?>');
-  $data = drupal_html_to_text($data);
-  $data = str_replace($search, '', $data);
-  return $data;
+function _mmd_clear_data($data) {
+  return check_plain($data);
 }
 
 /**
  * Handler, that created thumbnail of src image.
  * @param $src - filename of uploaded img
  * @return TRUE or FALSE.
+ *
+ * @see mmd_form_validate()
  */
-function mmd_create_img_thumbnail($src) {
+function _mmd_create_img_thumbnail($src) {
       $img = image_load('public://mmd-img/' . $src);
-      if ($img->info['height'] >= 150) {
-        image_resize($img, ($img->info['width'] * 150 / $img->info['height']), 150);
+      if ($img->info['width'] >= 150) {
+        image_resize($img, 150, ($img->info['height'] * 150 / $img->info['width']));
       }
       if(image_save($img, 'public://mmd-img/thumbnail/' . $src)) {
         return TRUE;

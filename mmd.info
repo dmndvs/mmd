@@ -1,4 +1,7 @@
 name = mmd
 description = My.Module.D
+dependencies[] = ctools
 version = 1.0
 core = 7.x
+
+stylesheets[all][] = mmd-style.css
