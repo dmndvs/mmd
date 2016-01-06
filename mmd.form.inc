@@ -54,6 +54,10 @@ function mmd_form_validate($form, &$form_state) {
   $form_state['values']['title'] = _mmd_clear_data($form_state['values']['title']);
   $form_state['values']['data'] = _mmd_clear_data($form_state['values']['data']);
 
+  if(strlen($form_state['values']['title']) >= 250) {
+    form_set_error('title', t('title length too long'));
+  }
+
   /**
    * Check file, upload, rename and create thumbnail
    */
@@ -139,7 +143,8 @@ function _mmd_insert_into_db(&$form_state) {
  * @see mmd_form_validate()
  */
 function _mmd_clear_data($data) {
-  return check_plain($data);
+  //check_plain()
+  return drupal_html_to_text($data);
 }
 
 /**

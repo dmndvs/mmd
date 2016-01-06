@@ -46,3 +46,6 @@ div.odd, div.even {
     margin: 0;
     padding: 0;
 }
+.mmd-read-more {
+    text-align: right;
+}

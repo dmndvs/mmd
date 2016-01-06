@@ -6,5 +6,8 @@
       <?php endif; print '<h2>'.$title.'</h2>';?></div>
     <div class="mmd-created"><?php print $created;?></div>
     <div class="mmd-data"><?php print $data;?></div>
+    <?php if(isset($read_more)) : ?>
+    <div class="mmd-read-more"><?php print $read_more;?></div>
+    <?php endif; ?>
   </div>
 </div>

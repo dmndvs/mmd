@@ -29,12 +29,16 @@ function mmd_theme()
     'mmd_display_item' => array(
       'template' => 'mmd_display_item',
       'arguments' => array(
-        'title' => null,
-        'data' => null,
-        'created' => null,
-        'img' => null,
-        'importance' => null,
-        'row' => null,
+        'title' => NULL,
+        'data' => NULL,
+        'created' => NULL,
+        'img' => NULL,
+        'importance' => NULL,
+        'src_path' => NULL,
+        'thumbnail_path' => NULL,
+        'imp_img' => NULL,
+        'row' => NULL,
+        'read_more' => NULL,
       )
     )
   );
