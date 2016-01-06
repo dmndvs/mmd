@@ -50,13 +50,14 @@ function mmd_theme()
 function mmd_menu() {
   $items = array();
   $items['mmd'] = array(
-    'title' => t('MMD'),
+    'title' => t('MMD Form'),
     'description' => t('My.Module.D'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('mmd_form'),
     'access arguments' => array('mmd_access'),
     'type' => MENU_NORMAL_ITEM,
     'menu_name' => 'main-menu',
+    'weight' => 21,
     'file' => 'mmd.form.inc',
   );
  return $items;

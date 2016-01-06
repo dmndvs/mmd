@@ -5,8 +5,6 @@
 function mmd_form($form, &$form_state) {
   $form['mmd_form'] = array(
     '#title' => t("dmn_form"),
-    '#prefix' => '<div>',
-    '#suffix' => '</div>',
     '#type' => 'fieldset',
   );
 

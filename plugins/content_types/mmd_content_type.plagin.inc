@@ -13,7 +13,7 @@ $plugin = array(
 function mmd_content_render($subtype, $conf, $panel_args, $context) {
 
   $block = new stdClass();
-  $block->title = t('MMD Content');
+  $block->title = t('');
   $block->content = '';
 
   // create external path to images
@@ -53,6 +53,11 @@ function mmd_content_render($subtype, $conf, $panel_args, $context) {
       'read_more' => $row['read_more'],
     ));
   }
+
+  if(empty($block->content)) {
+    $block->content = t('No data to show');
+  };
+
   return $block;
 }
 
