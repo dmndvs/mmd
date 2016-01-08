@@ -1,6 +1,25 @@
+/* general style */
+.pane-content {
+    margin: 0;
+    padding: 0;
+}
+
+div.mmd-content {
+    width: 75%;
+    display: inline-block;
+    text-align: justify;
+}
+
+div.odd {
+    background-color: #f4f4f4;
+}
+div.odd, div.even {
+    padding: 10px 10px 10px 0;
+}
+
 /* general img */
 div.mmd-img {
-    padding: 0px;
+    padding: 0;
     float: left;
     width: 25%;
     text-align: center;
@@ -29,23 +48,7 @@ div.mmd-created {
     color: #5b616e;
     text-align: right;
 }
-
-div.mmd-content {
-    width: 75%;
-    display: inline-block;
-    text-align: justify;
-}
-
-div.odd {
-    background-color: #f4f4f4;
-}
-div.odd, div.even {
-    padding: 10px 10px 10px 0;
-}
-.pane-content {
-    margin: 0;
-    padding: 0;
-}
+/* read more */
 .mmd-read-more {
     text-align: right;
 }

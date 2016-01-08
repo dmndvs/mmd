@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file mmd_content_type.plagin.inc
+ * Contain configuration of ctools_content_type plugin
+ */
 $plugin = array(
   'single' => TRUE,
   'title' => t('mmd-content'),
@@ -9,6 +13,10 @@ $plugin = array(
 
 /**
  * Callback for ctools content_type plugin
+ *
+ * @param $panel_args - Contain ID to display single item
+ *
+ * @return object
  */
 function mmd_content_render($subtype, $conf, $panel_args, $context) {
 
@@ -21,6 +29,9 @@ function mmd_content_render($subtype, $conf, $panel_args, $context) {
     $path = $wrapper->getExternalUrl();
     $src_path = $path . 'mmd-img/';
     $thumbnail_path = $path . 'mmd-img/thumbnail/';
+  } else {
+    $src_path = variable_get('file_public_path') . 'mmd-img/';
+    $thumbnail_path = variable_get('file_public_path') . 'mmd-img/thumbnail/';
   }
 
   //database query
@@ -88,7 +99,7 @@ function _mmd_prepare_vars($row, $arg = NULL, $i) {
     }
   }
   else {
-    $back_path = explode('/' , url(current_path()));
+    $back_path = explode('/' , current_path());
     array_pop($back_path);
     $back_path = url(implode('/',$back_path));
     $row['read_more'] = '<a href="' . $back_path . '">' . t('Back to full list') . '</a>';

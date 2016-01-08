@@ -1,5 +1,17 @@
 <?php
 /**
+ * @file mmd.module
+ * Contain general configuration of MMD module:
+ * hook_permission
+ * hook_ctools_plugin_directory
+ * hook_theme
+ * hook_menu
+ *
+ * @author Vladimir Dyachenko
+ */
+
+
+/**
  * Implements hook_permission().
  */
 function mmd_permission() {

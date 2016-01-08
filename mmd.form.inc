@@ -1,5 +1,10 @@
 <?php
 /**
+ * @file mmd.form.inc
+ * Contain all form functions
+ */
+
+/**
  * form structure
  */
 function mmd_form($form, &$form_state) {
@@ -18,12 +23,12 @@ function mmd_form($form, &$form_state) {
 
   $form['mmd_form']['checkbox'] = array(
     '#type' => 'checkbox',
-    '#title' => t("It's importants"),
+    '#title' => t("It's important"),
   );
 
   $form['mmd_form']['file'] = array(
     '#type' => 'file',
-    '#description' => t('Choose image with next extension: jpg, jpeg, png or gif') . '<br>' . t('max size: 2mb'),
+    '#description' => t('Choose image with next extension: jpg, jpeg, png or gif') . '<br>' . t('max size: 1mb'),
   );
 
   $form['mmd_form']['data'] = array(
@@ -45,15 +50,16 @@ function mmd_form($form, &$form_state) {
 
 /**
  * form validation
+ *
  * @see mmd_form()
  */
 function mmd_form_validate($form, &$form_state) {
 
   $form_state['values']['title'] = _mmd_clear_data($form_state['values']['title']);
-  $form_state['values']['data'] = _mmd_clear_data($form_state['values']['data']);
+  $form_state['values']['data'] = _mmd_clear_data($form_state['values']['data'], 'data');
 
   if(strlen($form_state['values']['title']) >= 250) {
-    form_set_error('title', t('title length too long'));
+    form_set_error('title', t('title length is too long'));
   }
 
   /**
@@ -63,7 +69,7 @@ function mmd_form_validate($form, &$form_state) {
     $validators = array(
       'file_validate_is_image' => array(),
       'file_validate_extensions' => array('png gif jpg jpeg'),
-      'file_validate_size' => array(2 * 1024 * 1024),
+      'file_validate_size' => array(1 * 1024 * 1024),
     );
 
     if ($file = file_save_upload('file', $validators, 'public://mmd-img/')) {
@@ -95,7 +101,7 @@ function mmd_form_validate($form, &$form_state) {
  */
 function mmd_form_submit($form, &$form_state) {
   if(_mmd_insert_into_db($form_state)) {
-    drupal_set_message(t('added'));
+    drupal_set_message(t('Added new item: @title', array('@title' => $form_state['values']['title'])));
   }
   else {
     drupal_set_message(t('Something went wrong'), 'error');
@@ -138,19 +144,24 @@ function _mmd_insert_into_db(&$form_state) {
 /**
  * Handler, that clear not allowed tags
  *
- * @see mmd_form_validate()
+ * @param $data - input string value from form
+ * @param $type - type of data
+ * @return string
  */
-function _mmd_clear_data($data) {
-  //check_plain()
-  return drupal_html_to_text($data);
+function _mmd_clear_data($data, $type = NULL) {
+  if($type == 'data') {
+    $data = check_plain($data);
+  }
+  else {
+    $data = drupal_html_to_text($data);
+  }
+  return $data;
 }
 
 /**
  * Handler, that created thumbnail of src image.
  * @param $src - filename of uploaded img
  * @return TRUE or FALSE.
- *
- * @see mmd_form_validate()
  */
 function _mmd_create_img_thumbnail($src) {
       $img = image_load('public://mmd-img/' . $src);

@@ -1,5 +1,13 @@
 <?php
 /**
+ * @file
+ * Contains database schema description,
+ * information for create path during module installation
+ * and information about path for erasing all data of module during uninstall
+ */
+
+
+/**
  * Implements hook_schema
  */
 function mmd_schema() {
