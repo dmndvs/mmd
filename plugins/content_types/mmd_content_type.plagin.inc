@@ -36,12 +36,14 @@ function mmd_content_render($subtype, $conf, $panel_args, $context) {
 
   //database query
   $query = db_select('mmd','m')
-    ->fields('m')
-    ->orderBy('created', 'DESC');
+    ->extend('PagerDefault')
+    ->fields('m');
   if(!empty($panel_args)) {
     $query->condition('mid', $panel_args, '=');
   }
-  $result = $query->execute();
+  $result = $query->limit(5)
+    ->orderBy('created', 'DESC')
+    ->execute();
 
   $i = 1;
   while($row = $result->fetchAssoc()) {
@@ -67,6 +69,8 @@ function mmd_content_render($subtype, $conf, $panel_args, $context) {
 
   if(empty($block->content)) {
     $block->content = t('No data to show');
+  } else {
+    $block->content .= theme('pager');
   };
 
   return $block;
@@ -91,23 +95,39 @@ function _mmd_prepare_vars($row, $arg = NULL, $i) {
     $row['style'] = 'even';
     $i++;
   }
+
+  //Get page number and create GET param for links
+  $page = '';
+  if(!empty($_GET['page'])) {
+    $page = 'page=' . $_GET['page'];
+    if(variable_get('clean_url') == '1') {
+      $page = '?' . $page;
+    } else {
+      $page = '&' . $page;
+    }
+  }
+
+  //Crop content and create link 'read more' or create link 'back'
   if(empty($arg)) {
     $row['read_more'] = NULL;
     if(strlen($row['data']) >= 550) {
       $row['data'] = substr($row['data'], 0, 550) . '...';
-      $row['read_more'] = '<a href="' . url(current_path() . '/' . $row['mid']) . '">' . t('Read more') . '</a>';
+      $row['read_more'] = '<a href="' . url(current_path() . '/' . $row['mid']) . $page . '">' . t('Read more') . '</a>';
     }
   }
   else {
     $back_path = explode('/' , current_path());
     array_pop($back_path);
     $back_path = url(implode('/',$back_path));
-    $row['read_more'] = '<a href="' . $back_path . '">' . t('Back to full list') . '</a>';
+    $row['read_more'] = '<a href="' . $back_path . $page . '">' . t('Back') . '</a>';
   }
+
+  //Check: does the picture?
   $row['setting'] = unserialize($row['setting']);
   if(empty($row['setting']['filename'])) {
     $row['setting']['filename'] = 'noimage.png';
   }
+
   $return['row'] = $row;
   $return['i'] = $i;
   return $return;
