@@ -1,6 +1,6 @@
 <?php
 /**
- * @file mmd_content_type.plagin.inc
+ * @file mmd_content_type.plugin.inc
  * Contain configuration of ctools_content_type plugin
  */
 $plugin = array(

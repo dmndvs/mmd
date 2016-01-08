@@ -11,7 +11,7 @@ function mmd_feature_default_page_manager_pages() {
   $page = new stdClass();
   $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
   $page->api_version = 1;
-  $page->name = 'mmd_content_page';
+  $page->name = 'dmn_content_page';
   $page->task = 'page';
   $page->admin_title = 'mmd-content-page';
   $page->admin_description = '';
@@ -23,9 +23,9 @@ function mmd_feature_default_page_manager_pages() {
     'name' => 'main-menu',
     'weight' => '22',
     'parent' => array(
-      'type' => 'normal',
+      'type' => 'none',
       'title' => '',
-      'name' => 'main-menu',
+      'name' => 'navigation',
       'weight' => '0',
     ),
   );
@@ -37,13 +37,13 @@ function mmd_feature_default_page_manager_pages() {
   $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
-  $handler->name = 'page_mmd_content_page__panel';
+  $handler->name = 'page_dmn_content_page__panel';
   $handler->task = 'page';
-  $handler->subtask = 'mmd_content_page';
+  $handler->subtask = 'dmn_content_page';
   $handler->handler = 'panel_context';
   $handler->weight = 0;
   $handler->conf = array(
-    'title' => 'Panel-mmd-content',
+    'title' => 'mmd-content',
     'no_blocks' => 0,
     'pipeline' => 'standard',
     'body_classes_to_remove' => '',
@@ -55,24 +55,24 @@ function mmd_feature_default_page_manager_pages() {
     'name' => 'panel',
   );
   $display = new panels_display();
-  $display->layout = 'flexible';
+  $display->layout = 'onecol';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
       'default' => NULL,
-      'center' => NULL,
+      'middle' => NULL,
     ),
   );
   $display->cache = array();
-  $display->title = '';
-  $display->uuid = 'e91bf3ca-97e3-468f-8320-fd3cc1035b2a';
+  $display->title = 'MMD-content';
+  $display->uuid = 'ca31d9de-7cb3-4d82-820b-79b1b520f2be';
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-5547468a-5a9a-4102-be19-1a0c358f6ef7';
-    $pane->panel = 'center';
-    $pane->type = 'mmd_content_type.plagin';
-    $pane->subtype = 'mmd_content_type.plagin';
+    $pane->pid = 'new-147023b4-dd67-43b2-bccb-de1701d4d38c';
+    $pane->panel = 'middle';
+    $pane->type = 'mmd_content_type.plugin';
+    $pane->subtype = 'mmd_content_type.plugin';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array();
@@ -84,14 +84,14 @@ function mmd_feature_default_page_manager_pages() {
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $pane->uuid = '5547468a-5a9a-4102-be19-1a0c358f6ef7';
-    $display->content['new-5547468a-5a9a-4102-be19-1a0c358f6ef7'] = $pane;
-    $display->panels['center'][0] = 'new-5547468a-5a9a-4102-be19-1a0c358f6ef7';
+    $pane->uuid = '147023b4-dd67-43b2-bccb-de1701d4d38c';
+    $display->content['new-147023b4-dd67-43b2-bccb-de1701d4d38c'] = $pane;
+    $display->panels['middle'][0] = 'new-147023b4-dd67-43b2-bccb-de1701d4d38c';
   $display->hide_title = PANELS_TITLE_NONE;
-  $display->title_pane = 'new-5547468a-5a9a-4102-be19-1a0c358f6ef7';
+  $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $page->default_handlers[$handler->name] = $handler;
-  $pages['mmd_content_page'] = $page;
+  $pages['dmn_content_page'] = $page;
 
   return $pages;
 
